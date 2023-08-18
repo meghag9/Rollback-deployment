@@ -4,7 +4,7 @@ pipeline{
 	stages{
 	   stage('Fetch repository'){
             steps {
-                git branch: 'test-1.1', credentialsId: '575f0444-ba30-4cfe-919c-fff9b2d7338d', url: 'https://github.com/meghag9/RollbackProject.git' 
+                git branch: 'main', credentialsId: '575f0444-ba30-4cfe-919c-fff9b2d7338d', url: 'https://github.com/meghag9/Rollback-deployment.git'
 				}
 				  }
 		stage ('Build'){
@@ -24,3 +24,22 @@ pipeline{
 				deploy adapters: [tomcat8(credentialsId: '7f6ba635-6c3e-4e72-a23b-ee86b5a49946', path: '', url: 'http://localhost:8081/')], contextPath: 'MyFirstwebApplication.war', war: '**/*.war'
 				 }
 			}
+			
+		 stage ('trigger build-n-deploy'){
+			steps{
+				bat 'build previous success build'
+				 }
+				}
+				
+		stage('after build-n-deploy'){
+			steps{
+				bat 'back after build-n-deploy completion'
+					}
+				}
+		stage ('rollback to tomcat server'){
+			steps{
+				deploy adapters: [tomcat8(credentialsId: '7f6ba635-6c3e-4e72-a23b-ee86b5a49946', path: '', url: 'http://localhost:8081/')], contextPath: 'MyFirstwebApplication.war', war: '**/*.war'
+				 }
+			}	
+		}
+	}
